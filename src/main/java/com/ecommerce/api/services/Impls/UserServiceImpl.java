@@ -34,4 +34,9 @@ public class UserServiceImpl implements UserService {
                 .build();
         userRepository.save(user);
     }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email.toLowerCase());
+    }
 }

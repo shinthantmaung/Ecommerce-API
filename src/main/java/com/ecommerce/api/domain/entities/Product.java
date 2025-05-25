@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -15,8 +16,8 @@ import java.util.UUID;
 @Table(name = "products")
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
-    @SequenceGenerator(name="user_seq", sequenceName = "user_sequence", allocationSize = 10)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_seq")
+    @SequenceGenerator(name="product_seq", sequenceName = "product_sequence", allocationSize = 10)
     private Long id;
 
     @Column(nullable = false)
@@ -25,6 +26,33 @@ public class Product {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(nullable = false)
+    private Integer quantity;
+
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
+
+    private String img;
+
+    @ManyToOne
+    @JoinColumn(name="category_id", nullable= false)
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(name="user_id", nullable = false)
+    private User vendor;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return id != null && Objects.equals(id, product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

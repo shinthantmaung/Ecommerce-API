@@ -30,8 +30,7 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
-    private ClientRegistrationRepository clientRegistrationRepository;
+    private final ClientRegistrationRepository clientRegistrationRepository;
     private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
