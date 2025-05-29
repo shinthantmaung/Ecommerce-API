@@ -1,15 +1,15 @@
 package com.ecommerce.api.domain.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 @Entity
 @Table(name = "categories")
 public class Category {

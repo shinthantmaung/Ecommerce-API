@@ -1,11 +1,13 @@
 package com.ecommerce.api.config;
 
-import com.ecommerce.api.services.CustomOAuth2UserService;
+
+import com.ecommerce.api.services.CustomOidcUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -27,11 +29,12 @@ import java.util.function.Consumer;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final ClientRegistrationRepository clientRegistrationRepository;
-    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOidcUserService customOidcUserService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -44,7 +47,7 @@ public class SecurityConfig {
                         .authorizationEndpoint(auth ->
                                 auth.authorizationRequestResolver(authorizationRequestResolver(clientRegistrationRepository)))
                         .defaultSuccessUrl("/hello")
-                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService)))
+                        .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOidcUserService)))
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
