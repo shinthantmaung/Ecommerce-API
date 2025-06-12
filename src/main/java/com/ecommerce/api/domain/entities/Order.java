@@ -1,6 +1,7 @@
 package com.ecommerce.api.domain.entities;
 
 
+import com.ecommerce.api.domain.Payment;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +37,19 @@ public class Order {
 
     @Column(nullable = false)
     private LocalDateTime orderedAt;
+
+    @Column(nullable = false)
+    private String address;
+
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private Payment paymentMethod;
+
+    @Column(nullable = false)
+    private String phoneNumber;
+
+    @Column(nullable = false)
+    private String phoneNumberRegionCode;
 
     @PrePersist
     protected void onCreate()

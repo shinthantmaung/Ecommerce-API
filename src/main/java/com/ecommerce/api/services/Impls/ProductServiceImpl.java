@@ -8,6 +8,7 @@ import com.ecommerce.api.repositories.ProductRepository;
 import com.ecommerce.api.services.CategoryService;
 import com.ecommerce.api.services.ProductService;
 import com.ecommerce.api.services.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +45,13 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public List<Product> getAllProducts() {
         return productRepository.findAll();
+    }
+
+    @Override
+    public Product getProductById(Long id) {
+        return productRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("product with id not found")
+        );
     }
 
 }

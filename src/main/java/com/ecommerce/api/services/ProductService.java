@@ -10,4 +10,6 @@ public interface ProductService {
     Product createProduct(CreateProductRequest createProductRequest, String vendorEmail);
 
     List<Product> getAllProducts();
+
+    Product getProductById(Long id);
 }
