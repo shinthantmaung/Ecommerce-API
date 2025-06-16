@@ -36,8 +36,17 @@ public class OrderServiceImpl implements OrderService {
         User user = userService.getUserByEmail(email);
         Cart cart = cartService.getCartByEmail(email);
         List<CartItem> cartItems = cart.getCartItems();
-        List<OrderItem> orderItems = new ArrayList<>();
+
+        Order newOrder = Order.builder()
+                .address(orderRequest.getAddress())
+                .paymentMethod(orderRequest.getPaymentMethod())
+                .phoneNumber(orderRequest.getPhoneNumber())
+                .phoneNumberRegionCode(orderRequest.getRegionCode())
+                .user(user)
+                .build();
+
         BigDecimal totalPrice = BigDecimal.valueOf(0);
+        List<OrderItem> orderItems = new ArrayList<>();
         for(CartItem cartItem : cartItems)
         {
             if(cartItem.getQuantity() > cartItem.getProduct().getQuantity())
@@ -46,24 +55,25 @@ public class OrderServiceImpl implements OrderService {
             }
 
             BigDecimal price = cartItem.getProduct().getPrice();
-            totalPrice = totalPrice.add(price);
+            BigDecimal finalPrice = price.multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+            totalPrice = totalPrice.add(finalPrice);
             OrderItem newOrderItem = OrderItem.builder()
+                    .order(newOrder)
                     .price(price)
                     .quantity(cartItem.getQuantity())
                     .product(cartItem.getProduct())
                     .build();
             orderItems.add(newOrderItem);
+
+            //updating product quantity
+            Integer updatedProductQuantity = cartItem.getProduct().getQuantity() - cartItem.getQuantity();
+            cartItem.getProduct().setQuantity(updatedProductQuantity);
         }
 
-        Order newOrder = Order.builder()
-                .orderItems(orderItems)
-                .address(orderRequest.getAddress())
-                .totalPrice(totalPrice)
-                .paymentMethod(orderRequest.getPaymentMethod())
-                .phoneNumber(orderRequest.getPhoneNumber())
-                .phoneNumberRegionCode(orderRequest.getRegionCode())
-                .user(user)
-                .build();
+        newOrder.setOrderItems(orderItems);
+        newOrder.setTotalPrice(totalPrice);
+
+        cartItems.clear();
 
         return orderRepository.save(newOrder);
     }

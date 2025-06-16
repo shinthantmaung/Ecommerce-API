@@ -24,7 +24,7 @@ public class Order {
     @SequenceGenerator(name="order_seq", sequenceName = "order_sequence", allocationSize = 10)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 

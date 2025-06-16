@@ -16,5 +16,7 @@ public interface CartService {
 
     Cart removeCartItemFromCart(Long productId, String email);
 
+    Cart updateCartItemQuantity(Integer quantity, String email, Long cartItemId);
+
     CartItem createCartItem(Cart cart, Product product, Integer quantity);
 }

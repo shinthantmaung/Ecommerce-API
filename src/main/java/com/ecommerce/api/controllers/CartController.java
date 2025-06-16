@@ -3,9 +3,11 @@ package com.ecommerce.api.controllers;
 import com.ecommerce.api.domain.DTOs.AddCartItemRequestDTO;
 import com.ecommerce.api.domain.DTOs.CartDTO;
 import com.ecommerce.api.domain.DTOs.RemoveCartItemRequestDTO;
+import com.ecommerce.api.domain.DTOs.UpdateCartItemQuantityRequestDTO;
 import com.ecommerce.api.domain.entities.Cart;
 import com.ecommerce.api.mappers.CartMapper;
 import com.ecommerce.api.services.CartService;
+import jakarta.el.ELManager;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,4 +57,18 @@ public class CartController {
         CartDTO cartDTO = cartMapper.toCartDTO(cart);
         return ResponseEntity.ok(cartDTO);
     }
+
+    @PatchMapping(path = "/items/{id}")
+    public ResponseEntity<CartDTO> updateCartItemQuantity(
+            @PathVariable Long id,
+            @RequestBody @Valid UpdateCartItemQuantityRequestDTO updateCartItemQuantityRequestDTO,
+            @AuthenticationPrincipal OidcUser user
+    )
+    {
+        String email = user.getEmail();
+        Cart cart = cartService.updateCartItemQuantity(updateCartItemQuantityRequestDTO.getQuantity(), email, id);
+        CartDTO cartDTO = cartMapper.toCartDTO(cart);
+        return ResponseEntity.ok(cartDTO);
+    }
+
 }

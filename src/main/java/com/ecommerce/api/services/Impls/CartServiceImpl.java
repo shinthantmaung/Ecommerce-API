@@ -87,6 +87,24 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
+    public Cart updateCartItemQuantity(Integer quantity, String email, Long cartItemId) {
+        Cart cart = getCartByEmail(email);
+        List<CartItem> cartItems = cart.getCartItems();
+
+        for(CartItem cartItem : cartItems)
+        {
+            if(cartItem.getId().equals(cartItemId))
+            {
+                cartItem.setQuantity(quantity);
+                break;
+            }
+        }
+
+        return cart;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Cart getCartByEmail(String email) {
         User user = userService.getUserByEmail(email);
