@@ -10,6 +10,8 @@ import com.ecommerce.api.services.ProductService;
 import com.ecommerce.api.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +47,11 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public List<Product> getAllProducts() {
         return productRepository.findAll();
+    }
+
+    @Override
+    public Page<Product> getAllProducts(Pageable productPageable) {
+        return productRepository.findAll(productPageable);
     }
 
     @Override

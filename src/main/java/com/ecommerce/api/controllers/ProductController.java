@@ -3,6 +3,7 @@ package com.ecommerce.api.controllers;
 import com.ecommerce.api.domain.CreateProductRequest;
 import com.ecommerce.api.domain.DTOs.CategoryDTO;
 import com.ecommerce.api.domain.DTOs.CreateProductRequestDTO;
+import com.ecommerce.api.domain.DTOs.PageResponseDTO;
 import com.ecommerce.api.domain.DTOs.ProductDTO;
 import com.ecommerce.api.domain.entities.Category;
 import com.ecommerce.api.domain.entities.Product;
@@ -10,6 +11,10 @@ import com.ecommerce.api.mappers.ProductMapper;
 import com.ecommerce.api.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,11 +47,24 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAllProducts()
+    public ResponseEntity<PageResponseDTO<Product>> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy
+    )
     {
-        List<Product> allProducts = productService.getAllProducts();
-        List<ProductDTO> allProductDTOs = allProducts.stream().map(productMapper::toProductDTO).toList();
-        return ResponseEntity.ok(allProductDTOs);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Product> pageResult = productService.getAllProducts(pageable);
+        return ResponseEntity.ok(
+                new PageResponseDTO<>(
+                        pageResult.getContent(),
+                        pageResult.getNumber(),
+                        pageResult.getSize(),
+                        pageResult.getTotalElements(),
+                        pageResult.getTotalPages(),
+                        pageResult.isLast()
+                )
+        );
     }
 
 }
